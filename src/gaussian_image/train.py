@@ -118,7 +118,9 @@ class SimpleTrainer2d:
         transform = transforms.ToPILImage()
         img = transform(out["render"].float().squeeze(0))
         name = self.image_name + f"_{str(iternum).zfill(5)}_fitting.png" 
-        img.save(str(self.log_dir / "intermediate_images" / name))
+        intermed_dir = self.log_dir / "intermediate_images"
+        intermed_dir.mkdir(exist_ok=True)
+        img.save(str(intermed_dir / name))
         return
 
 def image_path_to_tensor(image_path: Path):
