@@ -9,7 +9,7 @@ import sys
 from PIL import Image
 import torch.nn.functional as F
 from pytorch_msssim import ms_ssim
-from utils import *
+from .utils import *
 from tqdm import tqdm
 import random
 import copy

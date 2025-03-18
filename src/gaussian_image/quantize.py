@@ -1,7 +1,7 @@
 from vector_quantize_pytorch import VectorQuantize, ResidualVQ
 import torch
 from torch import nn
-from utils import *
+from .utils import *
 import torch.nn.functional as F
 import constriction
 import numpy as np
