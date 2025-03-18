@@ -76,6 +76,9 @@ class SimpleTrainer2d:
                 if iter % 10 == 0:
                     progress_bar.set_postfix({f"Loss":f"{loss.item():.{7}f}", "PSNR":f"{psnr:.{4}f},"})
                     progress_bar.update(10)
+                if self.args.save_every_n_image is not None:
+                    if iter % self.args.save_every_n_image == 0:
+                        self.save_intermediate_image(iter)
         end_time = time.time() - start_time
         progress_bar.close()
         psnr_value, ms_ssim_value = self.test()
@@ -106,6 +109,16 @@ class SimpleTrainer2d:
             name = self.image_name + "_fitting.png" 
             img.save(str(self.log_dir / name))
         return psnr, ms_ssim_value
+    
+    def save_intermediate_image(self, iternum):
+        self.gaussian_model.eval()
+        with torch.no_grad():
+            out = self.gaussian_model()
+        transform = transforms.ToPILImage()
+        img = transform(out["render"].float().squeeze(0))
+        name = self.image_name + f"_{str(iternum).zfill(5)}_fitting.png" 
+        img.save(str(self.log_dir / "intermediate_images" / name))
+        return
 
 def image_path_to_tensor(image_path: Path):
     img = Image.open(image_path)
@@ -137,6 +150,7 @@ def parse_args(argv):
         help="2D GS points (default: %(default)s)",
     )
     parser.add_argument("--model_path", type=str, default=None, help="Path to a checkpoint")
+    parser.add_argument("--save_every_n_image", type=int, default=None, help="How often to save intermediate image")
     parser.add_argument("--seed", type=float, default=1, help="Set random seed for reproducibility")
     parser.add_argument("--save_imgs", action="store_true", help="Save image")
     parser.add_argument(
@@ -168,11 +182,18 @@ def main(argv):
         image_length, start = 24, 0
     elif args.data_name == "DIV2K_valid_LRX2":
         image_length, start = 100, 800
+    else:
+        # custom dataset
+        image_paths = [p for p in Path(args.dataset).iterdir() if p.suffix.lower() in {'.jpg', '.jpeg', '.png'}]
+        start, image_length = 0, len(image_paths)
+
     for i in range(start, start+image_length):
         if args.data_name == "kodak":
             image_path = Path(args.dataset) / f'kodim{i+1:02}.png'
         elif args.data_name == "DIV2K_valid_LRX2":
             image_path = Path(args.dataset) /  f'{i+1:04}x2.png'
+        else:
+            image_path = image_paths[i]
 
         trainer = SimpleTrainer2d(image_path=image_path, num_points=args.num_points, 
             iterations=args.iterations, model_name=args.model_name, args=args, model_path=args.model_path)
