@@ -35,6 +35,7 @@ class SimpleTrainer2d:
         self.H, self.W = self.gt_image.shape[2], self.gt_image.shape[3]
         self.iterations = iterations
         self.save_imgs = args.save_imgs
+        self.save_every_n_image = args.save_every_n_image
         self.log_dir = Path(f"./checkpoints/{args.data_name}/{model_name}_{args.iterations}_{num_points}/{self.image_name}")
         
         if model_name == "GaussianImage_Cholesky":
@@ -76,8 +77,8 @@ class SimpleTrainer2d:
                 if iter % 10 == 0:
                     progress_bar.set_postfix({f"Loss":f"{loss.item():.{7}f}", "PSNR":f"{psnr:.{4}f},"})
                     progress_bar.update(10)
-                if self.args.save_every_n_image is not None:
-                    if iter % self.args.save_every_n_image == 0:
+                if self.save_every_n_image is not None:
+                    if iter % self.save_every_n_image == 0:
                         self.save_intermediate_image(iter)
         end_time = time.time() - start_time
         progress_bar.close()
