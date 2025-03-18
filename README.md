@@ -1,4 +1,16 @@
-# GaussianImage: 1000 FPS Image Representation and Compression by 2D Gaussian Splatting
+
+
+# pip-installable version of [Xinjie Zhang](https://xinjie-q.github.io/)'s [GaussianImage](https://github.com/Xinjie-Q/GaussianImage)
+
+I restructured into a src layout and added a pyproject.toml
+so you can install this via `uv add git+https://github.com/fr1ll/gaussian_image`
+
+I also modified the scripts to reference the .py files from the src layout.
+
+TODO:
+- [ ] Test the scripts to make sure I didn't break them
+
+## GaussianImage: 1000 FPS Image Representation and Compression by 2D Gaussian Splatting
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
 [![arXiv](https://img.shields.io/badge/GaussianImage-2403.08551-b31b1b)](https://arxiv.org/abs/2403.08551)
 [![GitHub Repo stars](https://img.shields.io/github/stars/Xinjie-Q/GaussianImage.svg?style=social&label=Star&maxAge=60)](https://github.com/Xinjie-Q/GaussianImage)
